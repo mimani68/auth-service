@@ -3,6 +3,7 @@ import * as express from 'express';
 import {
     login,
     logout,
+    token,
     whoami
 } from '../controllers/auth.controller';
 
@@ -22,6 +23,7 @@ AuthRouter.get('/ping', ( req: express.Request, res:express.Response ) => {
 AuthRouter
     .get('/me', whoami )
     .post('/login', login )
+    .post('/token', token )
     .post('/logout', logout );
 
 

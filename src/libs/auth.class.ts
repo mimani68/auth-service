@@ -60,6 +60,8 @@ class Auth {
     }): {
         token: string,
         exp: string
+        refreshToken: string
+        status: string
     } => {
         let expires = new Date( new Date().getTime() + 7 * 24 * 60 * 60 * 1000 ).toISOString()
         let token = jwt.encode({
@@ -67,17 +69,23 @@ class Auth {
             username: profile.username,
             password: ';('
             // password: profile.password
-        }, process.env.JWT_SECRET || this.ALTERNATE_SALT )
+        }, process.env.JWT_SECRET || this.ALTERNATE_SALT)
+        let refreshToken = jwt.encode({
+            exp: expires,
+            username: profile.username,
+            password: ';('
+            // password: profile.password
+        }, process.env.JWT_REFESH_SECRET || this.ALTERNATE_SALT)
 
         return {
             token: "JWT " + token,
+            refreshToken: refreshToken,
             exp: expires,
+            status: "Logged in"
         }
     }
 
     /**
-     * 
-     * 
      * 
      */
     private locaStrategy = (): localStartegy => {
@@ -85,22 +93,18 @@ class Auth {
         return new localStartegy(
             params,
             (username: string, password: string, done: Function) => {
-            //   profile.findOne({
-            //       username: username
-            //     }, function (err: any, profile: any) {
-            //     if (err) { return done(err) }
-            //     if (!profile) {
-            //       return done(null, false, { message: 'Incorrect username.' })
-            //     }
-            //     if (!profile.validPassword(password)) {
-            //     return done(null, false, { message: 'Incorrect password.' })
-            //     }
-            //     return done(null, profile)
-            //   })
-                return done(null, {
-                    _id: '154',
-                    username: 'mahdi'
-                })
+              profile.findOne({
+                  username: username
+                }, function (err: any, profile: any) {
+                if (err) { return done(err) }
+                if (!profile) {
+                  return done(null, false, { message: 'Incorrect username.' })
+                }
+                if (!profile.validPassword(password)) {
+                return done(null, false, { message: 'Incorrect password.' })
+                }
+                return done(null, profile)
+              })
             }
         )
     }
@@ -113,28 +117,21 @@ class Auth {
         }
 
         return new JWTStrategy(params, (req: any, payload: any, done: any) => {
-            // profile.findOne({ 
-            //     username: payload.username
-            // }, (err: any, profile: any) => {
-            //     /* istanbul ignore next: passport response */
-            //     if (err) {
-            //         return done(err)
-            //     }
-            //     /* istanbul ignore next: passport response */
-            //     if (profile === null) {
-            //         return done(null, false, {
-            //             message: "The profile in the token was not found"
-            //         })
-            //     }
-
-            //     return done(null, {
-            //         _id: profile._id,
-            //         username: profile.username
-            //     })
-            // })
-            return done(null, {
-                _id: '154',
-                username: 'mahdi'
+            profile.findOne({ 
+                username: payload.username
+            }, (err: any, profile: any) => {
+                if (err) {
+                    return done(err)
+                }
+                if (profile === null) {
+                    return done(null, false, {
+                        message: "The profile in the token was not found"
+                    })
+                }
+                return done(null, {
+                    _id: profile._id,
+                    username: profile.username
+                })
             })
         })
     }
@@ -255,9 +252,6 @@ class Auth {
                     status: 500,
                     message: 'UNAUTHORIZED ACCESS'
                 })
-                // throw new Error("UNAUTHORIZED ACCESS")
-                // res.redirect('/')
-                // return 'failed login'
             }
     }
 
@@ -280,7 +274,6 @@ class Auth {
             req &&
             req.header('Authorization')
         ) {
-            // console.log('[auth middleware] header ', req.header('Authorization'))
             const md5payload = req.header('Authorization').split(' ')[1]
             try {
                 value = jwt.decode(
@@ -292,7 +285,6 @@ class Auth {
                 })
                 req.user = users.filter( (o: IProfile) => o.password === value.password )[0]
             } catch (error) {
-                console.error('[AUTH] token is invalid')
                 console.error('[AUTH] ', md5payload)
             }
         }

@@ -70,10 +70,36 @@ export let login = async (req: any, res: any) => {
 
 }
 
+
+
+export let token = async (req: any, res: any) => {
+    // refresh the damn token
+    const postData = req.body
+    // if refresh token exists
+    if((postData.refreshToken) && (postData.refreshToken in tokenList)) {
+        const user = {
+            "email": postData.email,
+            "name": postData.name
+        }
+        const token = jwt.sign(user, config.secret, { expiresIn: config.tokenLife})
+        const response = {
+            "token": token,
+        }
+        // update the token in the list
+        tokenList[postData.refreshToken].token = token
+        res.status(200).json(response);        
+    } else {
+        res.status(404).send('Invalid request')
+    }
+}
+
+
 export let logout = async (req: any, res: any) => {
     return null
 }
 
+
 export let whoami = async (req: any, res: any) => {
     return null
 }
+
