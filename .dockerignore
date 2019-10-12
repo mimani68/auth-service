@@ -1,0 +1,24 @@
+# development
+.git
+.gitignore
+README.md
+LICENSE
+*dev-docs*
+*docker-compose*
+*Dockerfile*
+Dockerfile*
+
+# production
+# .git
+# .gitignore
+# README.md
+# LICENSE
+# *dev-docs*
+# *docker-compose*
+# *Dockerfile*
+# Dockerfile*
+# package-lock.json
+# *node_modules*
+# logs
+# *.log
+# .vscode
