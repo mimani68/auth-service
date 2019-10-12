@@ -42,7 +42,7 @@ class Server {
      * total project configuration
      */
     config() : void {
-        new DataBaseConnection('mongodb', this.MONGODB_URL)
+        // new DataBaseConnection('mongodb', this.MONGODB_URL)
 
         this.app.use(bodyParser.urlencoded({extended : true}))
         this.app.use(bodyParser.json())
@@ -99,8 +99,7 @@ class Server {
         // P R O T E C T E D
         // E N D P O I N T
         // 
-        this.app.use('/authenticate', AuthRouter)
-        this.app.use('/authorization', AuthRouter)
+        this.app.use('/auth', AuthRouter)
 
     }
 

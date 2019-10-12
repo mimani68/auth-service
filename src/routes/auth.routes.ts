@@ -10,7 +10,7 @@ export var AuthRouter = express.Router();
 
 AuthRouter.get('/ping', ( req: express.Request, res:express.Response ) => {
     res.json({
-        title: 'pong from Auth routes',
+        title: 'pong from Auth routes!',
         time: new Date().toISOString()
     })
 });

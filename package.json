@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "npm run dev:watch:inspect:ts3",
-    "start:simple": "ts-node",
+    "start:dev": "./node_modules/.bin/nodemon --exec 'npm run start:dev'",
     "clean": "rm -rf ./dist",
     "install": "npm install; npm prune; npm audit fix --force",
     "build": "npm audit fix --force && npm run clean && tsc",

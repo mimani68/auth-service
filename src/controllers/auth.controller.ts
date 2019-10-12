@@ -30,16 +30,11 @@ export let login = async (req: any, res: any) => {
     // E X P R E S S
     // V A L I D A T O R
     // 
-    // req.checkBody("username", "Invalid username").notEmpty()
-    // req.checkBody("password", "Invalid password").notEmpty()
-    // let errors = req.validationErrors()
-    // if (errors) throw errors
-    // let profileObj = await profile.findOne({ 
-    //     username: req.body.username
-    // })
-    // if (profileObj === null) throw "profile not found"
-    // let success = await profile.comparePassword(req.body.password)
-    // if (success === false) throw ""
+    req.checkBody("username", "Invalid username").notEmpty()
+    req.checkBody("password", "Invalid password").notEmpty()
+    let errors = req.validationErrors()
+    if (errors) throw errors
+
 
     // 
     // C H E C K
